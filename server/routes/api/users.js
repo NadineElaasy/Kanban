@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../../models/User");
+const userValidation = require("../../validations/userValidation");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const tokenKey = require("../../config/keys").secretOrKey;
@@ -52,17 +53,17 @@ router.put(
             password: hashedPassword,
           }
         );
+      } else {
+        const newUser = new User({
+          name: req.body.name,
+        });
+        const updatedUser = await User.findByIdAndUpdate(
+          { _id: userID },
+          {
+            name: req.body.name,
+          }
+        );
       }
-     else{ const newUser = new User({
-        name: req.body.name
-      });
-      const updatedUser = await User.findByIdAndUpdate(
-        { _id: userID },
-        {
-          name: req.body.name
-        }
-      );
-    }
 
       res.json({ msg: "User updated successfully" });
     } catch (error) {
@@ -88,17 +89,17 @@ router.delete(
 
 //Register
 router.post("/register", async (req, res) => {
-  //console.log("here")
-  //   const isValidated = userValidator.createValidation(req.body);
-  //   if (isValidated.error) {
-  //     //console.log(isValidated.error.details[0].message);
-  //     return res
-  //       .status(400)
-  //       .send({
-  //         msg: isValidated.error.details[0].message,
-  //         error: "validation error",
-  //       });
-  //   }
+  const isValidated = userValidation.validate(req.body);
+  //console.log(isValidated)
+  if (isValidated.error) {
+    console.log(isValidated.error.details[0].message);
+    return res
+      .status(400)
+      .send({
+        msg: isValidated.error.details[0].message,
+        error: "validation error",
+      });
+  }
   const body = {
     name: req.body.name,
     password: req.body.password,

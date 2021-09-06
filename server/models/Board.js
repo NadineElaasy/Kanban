@@ -38,4 +38,6 @@ const BoardSchema = new Schema({
 });
 
 const Board = mongoose.model("boards", BoardSchema);
-module.exports = Board;
+const List = mongoose.model("lists", ListSchema);
+const Card = mongoose.model("cards", CardSchema);
+module.exports = {Board,List,Card};
