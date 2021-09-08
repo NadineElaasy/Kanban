@@ -1,13 +1,14 @@
 const express = require("express");
 const app = express();
-const port = 3000;
+const port = 3333;
 
 const mongoose = require("mongoose");
 const users = require("./routes/api/users");
 const boards = require("./routes/api/boards");
-// const db =
-//   "mongodb+srv://kanbanadmin:nodogoro123@cluster0.yyqos.mongodb.net/kanbandb?retryWrites=true&w=majority";
 let db = require('./config/keys').mongoURI;
+const cors = require('./node_modules/cors/lib')
+
+app.use(cors())
 mongoose
   .connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {

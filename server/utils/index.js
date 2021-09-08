@@ -1,9 +1,5 @@
  function isEqual(str1, str2) {
-   //convert to lower case and remove white spaces
-
-   console.log("IS Equal 1:", str1 , str2)
-   console.log("IS Equal 2:", str1.toLowerCase().trim() === str2.toLowerCase().trim())
-
+ 
   return str1.toLowerCase().trim() === str2.toLowerCase().trim();
 }
 function getTitleFormat(str1) {
@@ -20,5 +16,4 @@ function getTitleFormat(str1) {
      });
   return splittedStrArrayWithoutSpaces.join("-");
 }
-//console.log(getTitleFormat("NAdine  Moustafa    ElAssy"));
 module.exports={isEqual,getTitleFormat};

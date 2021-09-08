@@ -18,6 +18,22 @@ router.get("/", async (req, res) => {
   const boards = await Board.find();
   res.json({ data: boards });
 });
+//Getting All Boards for a specific user
+router.get(
+  "/user/allboards",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    console.log("HELLO!")
+    //const boardID = req.params.id;
+    const userID = req.user.id;
+    const board = await Board.find({owner :userID});
+    //if (!board) return res.status(404).send({ error: "Board does not exist" });
+
+    return res.json({ data: board });
+    
+    //return res.status(401).send({ error: "Not Authorized" });
+  }
+);
 
 //Get a Specific Board
 router.get(

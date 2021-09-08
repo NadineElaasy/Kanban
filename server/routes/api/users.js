@@ -91,25 +91,35 @@ router.delete(
 router.post("/register", async (req, res) => {
   const isValidated = userValidation.validate(req.body);
   //console.log(isValidated)
+  
   if (isValidated.error) {
-    console.log(isValidated.error.details[0].message);
+    let validationMsg;
+    console.log("ERROR ", isValidated.error);
+    console.log("details ",isValidated.error.details);
+    if(isValidated.error.details[0].context.label==="name"){
+      validationMsg="Username must be greater than 6 and start with a letter"
+    }
+    else{
+     
+      validationMsg="Password must be greater than 8 and contain at least one uppercase letter, one lowercase letter, and one number"
+    }
     return res
       .status(400)
       .send({
-        msg: isValidated.error.details[0].message,
+        msg: validationMsg,
         error: "validation error",
       });
   }
   const body = {
     name: req.body.name,
-    password: req.body.password,
+    password: req.body.password
   };
 
   const user = await User.findOne({ name: body.name });
   if (user) {
     return res
       .status(400)
-      .json({ error: "Name already exists", msg: "Name already exists" });
+      .json({ error: "Name already exists", msg: "Username already exists, try another one" });
   }
   const salt = bcrypt.genSaltSync(10);
   const hashedPassword = bcrypt.hashSync(body.password, salt);
@@ -127,7 +137,7 @@ router.post("/login", async (req, res) => {
     const { name, password } = req.body;
     const user = await User.findOne({ name });
 
-    if (!user) return res.status(404).json({ msg: "name does not exist" });
+    if (!user) return res.status(404).json({ msg: "This username does not exist!" });
     const match = bcrypt.compareSync(password, user.password);
     if (match) {
       const payload = {
@@ -139,7 +149,7 @@ router.post("/login", async (req, res) => {
     } else {
       return res
         .status(400)
-        .send({ error: "Wrong password", msg: "wrong password" });
+        .send({ error: "Wrong password", msg: "Wrong password!" });
     }
   } catch (error) {
     console.error(error);
